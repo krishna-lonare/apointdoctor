@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApointDoctor | Book Your Premium Care</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <span class="icon">⚕️</span> ApointDoctor
+            </a>
+            <ul class="nav-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#book">Book Appointment</a></li>
+                <li><a href="#check-status">Check Status</a></li>
+                <li><a href="doctor.html" class="btn btn-outline" target="_blank">Doctor Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="hero" class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Premium Healthcare <br><span>At Your Fingertips</span></h1>
+                <p class="hero-subtitle">Experience a seamless and modern way to book your doctor appointments. Fast, secure, and reliable.</p>
+                <div class="hero-actions">
+                    <a href="#book" class="btn btn-primary">Book Now</a>
+                    <a href="#check-status" class="btn btn-secondary">Check Status</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="glass-card">
+                    <div class="pulse-ring"></div>
+                    <div class="card-icon">🩺</div>
+                    <h3>Top Rated Specialists</h3>
+                    <p>Book with the best doctors in the city.</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        
+        <!-- Booking Section -->
+        <section id="book" class="section">
+            <div class="section-header">
+                <h2>Book an Appointment</h2>
+                <p>Fill out the form below to schedule your visit.</p>
+            </div>
+            
+            <div class="card booking-card">
+                <form id="booking-form" class="form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patientName">Full Name</label>
+                            <input type="text" id="patientName" name="patientName" placeholder="e.g. John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="patientPhone">Phone Number</label>
+                            <input type="tel" id="patientPhone" name="patientPhone" placeholder="e.g. 1234567890" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="date">Preferred Date</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="time">Preferred Time</label>
+                            <select id="time" name="time" required>
+                                <option value="" disabled selected>Select a time</option>
+                                <option value="09:00 AM">09:00 AM</option>
+                                <option value="10:00 AM">10:00 AM</option>
+                                <option value="11:00 AM">11:00 AM</option>
+                                <option value="02:00 PM">02:00 PM</option>
+                                <option value="03:00 PM">03:00 PM</option>
+                                <option value="04:00 PM">04:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="symptoms">Symptoms / Reason for Visit</label>
+                        <textarea id="symptoms" name="symptoms" rows="3" placeholder="Briefly describe your symptoms..."></textarea>
+                    </div>
+
+                    <div id="booking-msg" class="form-message"></div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Confirm Booking</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Check Status Section -->
+        <section id="check-status" class="section bg-light rounded-xl">
+            <div class="section-header">
+                <h2>Check Appointment Status</h2>
+                <p>Enter your phone number to see your appointments.</p>
+            </div>
+
+            <div class="card status-card mx-auto">
+                <form id="status-form" class="form flex-row">
+                    <div class="form-group flex-grow">
+                        <input type="tel" id="checkPhone" placeholder="Your Phone Number" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Fetch</button>
+                </form>
+
+                <div id="status-results" class="results-container">
+                    <!-- Results will be injected here via JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p>&copy; 2026 ApointDoctor. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
