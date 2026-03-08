@@ -1,17 +1,26 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+// --- Replaced imports ---
+import { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import AuthContext from '../context/AuthContext';
 
 export default function DoctorDashboard() {
   const [appointments, setAppointments] = useState([]);
   const [filter, setFilter] = useState('All');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const fetchAppointments = async () => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/appointments');
+      const res = await fetch('/api/appointments', {
+        headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
+      });
       const data = await res.json();
       
       if (!res.ok) throw new Error(data.error || 'Failed to fetch appointments');
@@ -26,7 +35,7 @@ export default function DoctorDashboard() {
 
   useEffect(() => {
     fetchAppointments();
-  }, []);
+  }, [user]);
 
   const handleStatusChange = async (id, newStatus) => {
     if (!window.confirm(`Are you sure you want to mark this appointment as ${newStatus}?`)) return;
@@ -34,7 +43,10 @@ export default function DoctorDashboard() {
     try {
       const res = await fetch(`/api/appointments/${id}/status`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        },
         body: JSON.stringify({ status: newStatus })
       });
       
@@ -45,6 +57,11 @@ export default function DoctorDashboard() {
     } catch (err) {
       alert(err.message);
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
   };
 
   const filteredAppointments = filter === 'All' 
@@ -59,7 +76,7 @@ export default function DoctorDashboard() {
             <span className="icon">⚕️</span> ApointDoctor <span style={{ fontSize: '1rem', color: 'var(--text-muted)', fontWeight: 'normal', marginLeft: '0.5rem' }}>| Dashboard</span>
           </Link>
           <ul className="nav-links">
-            <li><Link to="/">Patient Portal</Link></li>
+            <li><button onClick={handleLogout} className="btn btn-secondary btn-sm" style={{ cursor: 'pointer' }}>Logout</button></li>
           </ul>
         </div>
       </nav>

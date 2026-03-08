@@ -1,19 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AuthContext from '../context/AuthContext';
 
 export default function StatusCheck() {
-  const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState(null);
   const [error, setError] = useState('');
+  
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const handleFetch = async (e) => {
-    e.preventDefault();
+  const handleFetch = async () => {
+    if (!user) return;
     setLoading(true);
     setError('');
-    setResults(null);
-
+    
     try {
-      const response = await fetch(`/api/appointments/${phone}`);
+      const response = await fetch(`/api/appointments/me`, {
+        headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
+      });
       const result = await response.json();
 
       if (!response.ok) {
@@ -28,47 +35,47 @@ export default function StatusCheck() {
     }
   };
 
+  useEffect(() => {
+    if (user) {
+      handleFetch();
+    }
+  }, [user]);
+
   return (
     <section id="check-status" className="section bg-light rounded-xl">
       <div className="section-header">
-        <h2>Check Appointment Status</h2>
-        <p>Enter your phone number to see your appointments.</p>
+        <h2>Your Appointments</h2>
+        <p>View the status of your upcoming consultations.</p>
       </div>
 
       <div className="card status-card mx-auto">
-        <form onSubmit={handleFetch} className="form flex-row">
-          <div className="form-group flex-grow">
-            <input 
-              type="tel" 
-              placeholder="Your Phone Number" 
-              value={phone} 
-              onChange={(e) => setPhone(e.target.value)} 
-              required 
-            />
+        {!user ? (
+          <div style={{ textAlign: 'center', padding: '1rem' }}>
+            <p className="text-muted" style={{ marginBottom: '1rem' }}>Log in to view your appointments.</p>
+            <button className="btn btn-outline" onClick={() => navigate('/login')}>Login</button>
           </div>
-          <button type="submit" className="btn btn-primary">Fetch</button>
-        </form>
+        ) : (
+          <div className="results-container">
+            {loading && <p className="text-center">Loading appointments...</p>}
+            {error && <p className="text-center text-muted" style={{ color: 'var(--status-cancelled) !important', marginTop: '1rem' }}>{error}</p>}
+            
+            {!loading && results && results.length === 0 && (
+              <p className="text-center text-muted" style={{ marginTop: '1rem' }}>You have no appointments booked yet.</p>
+            )}
 
-        <div className="results-container">
-          {loading && <p className="text-center">Loading...</p>}
-          {error && <p className="text-center text-muted" style={{ color: 'var(--status-cancelled) !important', marginTop: '1rem' }}>{error}</p>}
-          
-          {results && results.length === 0 && (
-            <p className="text-center text-muted" style={{ marginTop: '1rem' }}>No appointments found for this phone number.</p>
-          )}
-
-          {results && results.length > 0 && results.map(app => (
-            <div key={app.id} className="result-item">
-              <div className="result-info">
-                <h4>Dr. Consultation - {app.patientName}</h4>
-                <p>📅 {app.date} | ⏰ {app.time}</p>
+            {!loading && results && results.length > 0 && results.map(app => (
+              <div key={app._id} className="result-item" style={{ marginBottom: '1rem', padding: '1rem', border: '1px solid #eee', borderRadius: '8px' }}>
+                <div className="result-info" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <h4 style={{ margin: '0 0 0.5rem 0' }}>Dr. Consultation - {app.patientName}</h4>
+                    <p style={{ margin: 0, color: '#666', fontSize: '0.9rem' }}>📅 {app.date} | ⏰ {app.time}</p>
+                  </div>
+                  <span className={`status-badge badge-${app.status.toLowerCase()}`}>{app.status}</span>
+                </div>
               </div>
-              <div>
-                <span className={`status-badge badge-${app.status.toLowerCase()}`}>{app.status}</span>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

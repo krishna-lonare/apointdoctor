@@ -139,10 +139,16 @@ ul { list-style: none; }
 .nav-links a:hover {
     color: var(--primary);
 }
-.nav-links .btn {
+.nav-links .btn-outline {
     color: var(--primary);
 }
-.nav-links .btn:hover {
+.nav-links .btn-outline:hover {
+    color: white;
+}
+.nav-links .btn-primary {
+    color: white;
+}
+.nav-links .btn-primary:hover {
     color: white;
 }
 
